@@ -67,10 +67,17 @@ Skincare products seem to be the most recurring sales.
 
 There is no trend between price and revenue generated per product.
 
+### Customer Product Purchase Heatmap
+![alt text](https://github.com/victorharvey/Supply-Chain-Analysis/blob/main/Customer Product Purchase Heatmap.png "Plot Chart of the Price and Revenue Distribution")
+
+We see that the male group tend to buy cosmetics and skincare products. Female group tend to buy haircare and skincare. Non-binary group seem to be equally distributed. There is a group of labled as Unknown who tend to buy more Cosmetics. 
+
+Conclusion: This Unknown label should be investigated further.
+
 ### Purchase Distribution Among Customer Demographic.
 ![alt text](https://github.com/victorharvey/Supply-Chain-Analysis/blob/main/Purchase_Distribution_Among_Customer_Demographic.png "Purchase Distribution Among Customer Demographic")
 
-Males buy products across the price range with a slight preference for both cheap and expensive (outliers). Females tend to buy across the price range but with a heavy preference for cheaper range of products. Non-binaries tend to buy across the price range but with a heavy preference around the median. The Unknowns tend to buy across the price range but with a heavy preference for expensive products. 
+The male group buy products across the price range with a slight preference for both cheap and expensive (outliers). The female group tend to buy across the price range but with a heavy preference for cheaper range of products. The Non-binary group tend to buy across the price range but with a heavy preference around the median. The Unknown group tend to buy across the price range but with a heavy preference for expensive products. 
 
 Conclusion: This raises even more questions on who are the unknown and how can we increase their purchases?
 
