@@ -1,3 +1,8 @@
+install.packages("dplyr")
+library(dplyr)
+install.packages("ggplot2")
+library(ggplot2)
+
 setwd("/users/victorharvey/Documents/Work/Projects/Portfolio/Supply-Chain-Analysis")
 
 input_df <- read.csv("supply_chain_data.csv", header=TRUE, sep=',')
@@ -8,11 +13,11 @@ tail(input_df)
 
 str(input_df)
 
-# Copy data
+# COPY DATA
 data <- data.frame(input_df)
 tracemem(data) == tracemem(input_df)
 
-#MISSING VALUES
+# MISSING VALUES
 any(is.na(data)) # are there any missing values
 sapply(data, function(x) sum (is.na(x)))
 
@@ -21,8 +26,8 @@ str(data) #Looking for all the data that has more decimal places.
 # Rounding every numeric column to 2 decimal places
 data <- data %>% mutate(across(where(is.numeric), ~round(., 2)))
 
-# NAMES
-#Two columns have similar names and can lead to confusion, renaming.
+# COLUMN NAMES
+## Two columns have similar names and can lead to confusion, renaming.
 colnames(data)[colnames(data) == "Lead.times"] = "Product.Lead.Time"
 colnames(data)[colnames(data) == "Lead.time"] = "Supplier.Lead.Time"
 
@@ -80,30 +85,37 @@ for(i in colnames(data)){
 }
 
 # VISUALISATIONS
+
 ## Recurring Order by Product
-ggplot(data=data, aes(x=Product.type)) + geom_bar() 
+ggplot(data=data, 
+       aes(x=Product.type, fill = Product.type)
+       ) + geom_bar() + ggtitle("Product Type Sales")
 ### Skin Care seems to be the most recurring product
 
 ## Price v Revenue Generated
-ggplot(data = data, aes(x = Price, y = Revenue.generated)) +geom_point() 
+ggplot(data = data, 
+       aes(x = Price, y = Revenue.generated)
+       ) + geom_point() + ggtitle("Price v Revenue Generated")
 ### There is no trend between price and revenue generated per product
 
-## Product Purchase Distribution
+## Customer Purchase Distribution
 ggplot(data = data, 
        aes(x = Product.type, y = Customer.demographics, Name)
        ) + geom_tile(aes(fill = Number.of.products.sold),
-                     colour = "white") + scale_fill_gradient(low = "white", 
-                                                             high = "steelblue")
+                     colour = "white"
+                     ) + scale_fill_gradient(low = "white", high = "steelblue"
+                                             ) + ggtitle("Customer Product Purchase Heatmap")
 ### We see that men tend to buy cosmetics and skincare products. 
 ### Women tend to buy haircare and skincare. 
 ### Non-binary seem to be equally distributed. 
 ### There is a group on unknown gender who tend to buy more Cosmetics.
 ### This unknown group should be investigated further.
 
-## Purchase Distribution Among Demographic
+## Purchase Distribution Among Customer Demographic
 ggplot(data = data, 
        aes(x = Price, fill = Product.type)
-       ) + geom_histogram() + facet_wrap(~Customer.demographics)
+       ) + geom_histogram() + facet_wrap(~Customer.demographics
+                                         ) + ggtitle("Purchase Distribution Among Customer Demographic")
 ### Men buy our products across the price range with a slight preference for cheaper and expensive
 ### Female tend to buy across the price range but with a heavy preference for cheaper products
 ### Non-binary tend to buy across the price range but with a heavy preference around the median
@@ -113,7 +125,7 @@ ggplot(data = data,
 ## Product Type v Price
 ggplot(data = data, 
        aes(x = Product.type, y = Price, fill = Product.type)
-       ) + geom_violin(width = 1.4) + geom_boxplot(width = 0.1)
+       ) + geom_violin(width = 1.0) + geom_boxplot(width = 0.1) + ggtitle("Product Type v Price")
 ### Cosmetics are the most expensive products by average and weighted on the expensive side.
 ### Hair care is the second most expensive product on average but evenly distributed.
 ### Skincare is the cheapest product on average and weighted on the cheaper side.
@@ -121,7 +133,9 @@ ggplot(data = data,
 ## Product Type v Gross Margin
 ggplot(data = data, 
        aes(x = Product.type, y = Gross.Margin.Per.Product, fill = Product.type)
-       ) + geom_violin(width = 1.4) + geom_boxplot(width = 0.1)
+       ) + geom_violin(width = 1.0
+                       ) + geom_boxplot(width = 0.1
+                                        ) + ggtitle("Product Type v Gross Margin")
 ### On average we seem to make Gross Profit on Cosmetics, very little on hair care and skincare products.
 ### This lays more emphasis on reaching the Unknown customer segment and driving demand for cosmetics.
 ### It also lays the question of whether er should discontinue some products.
@@ -129,7 +143,9 @@ ggplot(data = data,
 ## Product Type v Product Lead Time
 ggplot(data = data, 
        aes(x = Product.type, y = Product.Lead.Time, fill = Product.type)
-       ) + geom_violin(width = 1.4) + geom_boxplot(width = 0.1)
+       ) + geom_violin(width = 1.0
+                       ) + geom_boxplot(width = 0.1
+                                        ) + ggtitle("Product Type v Product Lead Time")
 ## Cosmetics has the highest average product lead time from us to the customer. 
 ## Skincare has the second highest product lead time but has extreme outliers.
 ## Further investigation shows that even Cosmetics has the longest lead time and weighted at the extreme.
@@ -140,43 +156,87 @@ ggplot(data = data,
 ## Supplier v Carrier v Route Distribution
 data %>%
   ggplot(aes(x = Product.type, fill = Shipping.carriers)
-         ) + geom_bar() + facet_wrap(~Transportation.modes)
+         ) + geom_bar() + facet_wrap(~Transportation.modes
+                                     ) + ggtitle("Supplier v Carrier v Route Distribution")
 ### Carrier A is used across the product spectrum except for Cosmetics through Air
 ### Carrier B is used across the product spectrum except for Cosmtics through Sea
 ### Carrier C is used acrooss the product spectrum but rarely dominates
 ### Further investigation should be along the lines of which carrier to prioritise
 
+
+## Shipping Carrier v Shipping Costs
+ggplot(data = data, 
+       aes(x = Shipping.carriers, y = Shipping.costs, fill = Shipping.carriers)
+       ) + geom_violin(width = 1.0
+                       ) + geom_boxplot(width = 0.1
+                                        ) + ggtitle("Supplier v Carrier v Route Distribution")
+### Carrier A is the cheapest on average and weighted around the mean. 
+### Carrier C is the second cheapest but weighted on the expensive end.
+### Carriers B is the most expensive but evenly distributed.
+
 ## Production Volumes v Manufacturing Costs
-ggplot(data = data, aes(x = Production.volumes, y = Manufacturing.costs)) +geom_point()
+ggplot(data = data, 
+       aes(x = Production.volumes, 
+           y = Manufacturing.costs)
+       ) +geom_point() + ggtitle("Production Volumes v Manufacturing Costs")
 ### There doesnt seem to be a correlation between how much we produce and its cost
 
-##Production Volumes v Manufacturing Lead Times
-ggplot(data = data, aes(x = Production.volumes, y = Manufacturing.lead.time)) +geom_point()
+## Production Volumes v Manufacturing Lead Times
+ggplot(data = data, 
+       aes(x = Production.volumes, 
+           y = Manufacturing.lead.time)
+       ) +geom_point() + ggtitle("Production Volumes v Manufacturing Lead Times")
 ### Through eyeballing the graph there does seem to be a slight correlation between production volume and how long to manufacture
 ### There may be case for increasing demand accuracy to reduce the risk in increasing production volumes
 
 ## Production Volumes v Supplier Lead Times
 ggplot(data = data, 
        aes(x = Production.volumes, y = Supplier.Lead.Time)
-       ) +geom_point()
+       ) +geom_point() + ggtitle("Production Volumes v Supplier Lead Times")
 ### There doesnt seem to be a correlation between how much we produce and how quickly we can get it
 
-## Supplier v Revenu Generated
-ggplot(data = data, aes(x = Supplier.name, y = Revenue.generated)) + geom_bar(stat='identity')
+## Supplier v Revenue Generated
+ggplot(data = data, 
+       aes(x = Supplier.name, 
+           y = Revenue.generated, fill = Product.type)
+       ) + geom_bar(stat='identity') + ggtitle("Supplier v Revenue Generated")
 ### Supplier 1 supplies the revenue generating products. They should be a close relationship with them.
+### There most revenue generating product is skincare which happens to be our most recurring sales.
+### Most of the top 4 suppliers supply significant amounts of skincare products.
+### Most of the top 4 suppliers supply significant amount of cosmetic products.
+### Supplier 2 supplies a significant supply of haircare
+
+## Supplier v Shipping Location
+ggplot(data = data,
+       aes(x = Supplier.name,
+           fill = Location)
+       ) + geom_bar() + ggtitle("Supplier v Shipping Location")
+### Suppliers seem to be equally distributed across locations.
 
 ## Lead Times by Supplier Location
 ggplot(data = data, 
-       aes(x = Location, y = Supplier.Lead.Time, fill = Location)
-       ) + geom_violin(width = 1.4) + geom_boxplot(width = 0.1) 
-### On average products coming from Chennai have longer lead times followed by Bangalore
+       aes(x = Location, 
+           y = Supplier.Lead.Time, 
+           fill = Location)
+       ) + geom_violin(width = 1.0
+                       ) + geom_boxplot(width = 0.1
+                                        ) + ggtitle("Lead Times by Supplier Location")
+### On average products coming from Chennai and Bangalore have longer lead times followed by Bangalore
 
 ## Correlation Matrix of the entire data
 numeric_data <- select_if(data, is.numeric)
+
 cor_data <- round(cor(numeric_data), 2)
+
 melted_data <- melt(cor_data)
+
 head(melted_data)
-ggplot(data = melted_data, aes(x = X1, y = X2, fill = value)) + geom_tile()
+
+ggplot(data = melted_data, 
+       aes(x = X1, 
+           y = X2, 
+           fill = value)
+       ) + geom_tile() + ggtitle("Correlation Matrix")
 ### There is a strong negative correlation between Gross Profit Margin and Manufacturing Costs
 ### There is a Strong Positive correlation between Price and Gross Profit Margin.
 ### In essence we should investigate how to reduce manufacturing costs and increase prices
