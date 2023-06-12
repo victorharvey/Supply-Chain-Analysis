@@ -98,17 +98,17 @@ ggplot(data = data,
        ) + geom_point() + ggtitle("Price v Revenue Generated")
 ### There is no trend between price and revenue generated per product
 
-## Customer Purchase Distribution
+## Customer Product Purchase Heatmap
 ggplot(data = data, 
        aes(x = Product.type, y = Customer.demographics, Name)
        ) + geom_tile(aes(fill = Number.of.products.sold),
                      colour = "white"
                      ) + scale_fill_gradient(low = "white", high = "steelblue"
                                              ) + ggtitle("Customer Product Purchase Heatmap")
-### We see that men tend to buy cosmetics and skincare products. 
-### Women tend to buy haircare and skincare. 
+### We see that males tend to buy cosmetics and skincare products. 
+### Females tend to buy haircare and skincare. 
 ### Non-binary seem to be equally distributed. 
-### There is a group on unknown gender who tend to buy more Cosmetics.
+### There is a group of Unknown gender who tend to buy more Cosmetics.
 ### This unknown group should be investigated further.
 
 ## Purchase Distribution Among Customer Demographic

@@ -84,7 +84,7 @@ Conclusion: This raises even more questions on who are the unknown and how can w
 ### Product Type v Price
 ![alt text](https://github.com/victorharvey/Supply-Chain-Analysis/blob/main/Product_Type_v_Price.png "Product Type v Price")
 
-Men buy our products across the price range with a slight preference for cheaper and expensive
+
 Cosmetics are the most expensive products on average but weighted on the expensive side. Haircare is the second most expensive product on average but evenly distributed. Skincare is the cheapest product on average and weighted on the cheaper side.
 
 ### Product Type v Gross Margin
